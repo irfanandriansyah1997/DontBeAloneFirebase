@@ -12,6 +12,36 @@ const server = new ExpressHelper()
 
     .withMiddleware(cors());
 
+/**
+ * Set mysql from docker
+ */
+// var mysql = require('mysql');
+
+// var con = mysql.createConnection({
+//     host: 'mysql',
+//     user: 'user',
+//     password: 'rahasia123',
+//     database: 'appdb'
+// });
+
+// con.connect(function(err: any) {
+//     if (err) {
+//         console.log(err);
+//     }
+// });
+
+// con.query('SELECT * FROM t_user', function(
+//     error: any,
+//     rows: any,
+//     _: any
+// ) {
+//     if (error) {
+//         console.log(error);
+//     } else {
+//         console.log(rows);
+//     }
+// });
+
 function run(server: ExpressHelper): void {
     server.start(Number(port));
 }
