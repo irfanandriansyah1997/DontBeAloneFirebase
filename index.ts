@@ -1,49 +1,48 @@
-import { ExpressHelper } from './src/modules/express/express.modules';
-
 import * as morgan from 'morgan';
 import * as path from 'path';
+import { ExpressModule } from './src/modules/express/express.modules';
+import { ConfigParserModule } from './src/modules/config-parser/config-parser.module';
+
+import ChatRouter from './src/router/chat.router';
+import { MySQLModule } from './src/modules/mysql/mysql.module';
 
 var cors = require('cors');
-const port = process.env.PORT || 8080;
 
-const server = new ExpressHelper()
-    .withStaticPath(path.join(__dirname, 'static'), 2147483647000)
-    .withMiddleware(morgan('dev'))
+class App {
+    config: ConfigParserModule = new ConfigParserModule('./config.json');
+    express: any = {};
 
-    .withMiddleware(cors());
+    constructor() {
+        const { options } = this;
 
-/**
- * Set mysql from docker
- */
-// var mysql = require('mysql');
+        this.express = {
+            ...options
+        };
+    }
 
-// var con = mysql.createConnection({
-//     host: 'mysql',
-//     user: 'user',
-//     password: 'rahasia123',
-//     database: 'appdb'
-// });
+    get options(): any {
+        return {
+            port: this.config.get('main', 'port') || 8080,
+            host: this.config.get('main', 'host')
+        };
+    }
 
-// con.connect(function(err: any) {
-//     if (err) {
-//         console.log(err);
-//     }
-// });
+    public run(): void {
+        const { port } = this.express;
+        const database: MySQLModule = new MySQLModule(
+            this.config.get('database', 'host'),
+            this.config.get('database', 'user'),
+            this.config.get('database', 'password'),
+            this.config.get('database', 'database')
+        );
 
-// con.query('SELECT * FROM t_user', function(
-//     error: any,
-//     rows: any,
-//     _: any
-// ) {
-//     if (error) {
-//         console.log(error);
-//     } else {
-//         console.log(rows);
-//     }
-// });
-
-function run(server: ExpressHelper): void {
-    server.start(Number(port));
+        new ExpressModule()
+            .withStaticPath(path.join(__dirname, 'static'), 2147483647000)
+            .withMiddleware(morgan('dev'))
+            .withMiddleware(cors())
+            .extendRouter(new ChatRouter(database))
+            .start(port);
+    }
 }
 
-run(server);
+new App().run();

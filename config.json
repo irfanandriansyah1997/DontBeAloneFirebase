@@ -1,0 +1,12 @@
+{
+    "database": {
+        "host": "mysql",
+        "user": "user",
+        "password": "rahasia123",
+        "database": "appdb"
+    },
+    "main": {
+        "port": 8080,
+        "host": "localhost"
+    }
+}
