@@ -32,6 +32,7 @@ export default class ChatRouter extends BaseRouter {
                         if (res) {
                             res.send(
                                 JSON.stringify({
+                                    success: true,
                                     status: 200,
                                     message: 'Success'
                                 })
@@ -61,6 +62,7 @@ export default class ChatRouter extends BaseRouter {
                                 `https://dont-be-alone-246305.firebaseio.com/database/${room}.json?limitToLast=1&orderBy="$key"`
                             );
 
+                            console.log(room);
                             console.log(res.data);
                         });
 
