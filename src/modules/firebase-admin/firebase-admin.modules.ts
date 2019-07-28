@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import { UserField } from '../../model/user/interfaces/model.interfaces';
 
 const secret = require('./secret/dont-be-alone.secret.json');
 
@@ -16,41 +17,30 @@ export class FirebaseAdminModule {
         });
         this.database = this.conf.database();
         this.ref = this.database.ref('database');
-
-        // this.chat('event-01-bandung', 'message testing');
     }
 
-    public getMessageValue(message: string): any {
+    public getMessageValue(message: string, user: UserField): any {
         return {
             date: new Date().getTime(),
             message,
-            user: {
-                address: 'Jl. Mentor no 96, bandung',
-                bio: 'Just a regular boiii',
-                email: 'syauqiilham28@gmail.com',
-                name: 'Syauqi Ilham',
-                phoneNumber: '087750480421',
-                photo:
-                    'https://lh3.googleusercontent.com/a-/AAuE7mAhtyfMDhNvJ3G0rukgsw64qr-7KyKIqPsc0ClAsg',
-                username: 'cukil69'
-            }
+            user
         };
     }
 
-    public chat(event: string, message: string): void {
+    public chat(event: string, message: string, user: UserField): void {
         const child = this.ref.child(event);
-        child.push().set(this.getMessageValue(message));
-        this.sendNotification(message);
+        child.push().set(this.getMessageValue(message, user));
+        this.sendNotification(message, event, user.username);
     }
 
-    public sendNotification(message: string) {
+    public sendNotification(message: string, topic: string, username: string) {
         const res: any = {
             data: {
-                user: 'cukil',
+                username,
                 message,
-                date: new Date().getTime()
+                date: `${new Date().getTime()}`
             },
-            topic: 'topic-1'
+            topic
         };
 
         this.conf

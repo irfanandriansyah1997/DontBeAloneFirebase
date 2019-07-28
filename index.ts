@@ -1,9 +1,10 @@
 import * as morgan from 'morgan';
 import * as path from 'path';
+import * as bodyParser from 'body-parser';
 import { ExpressModule } from './src/modules/express/express.modules';
 import { ConfigParserModule } from './src/modules/config-parser/config-parser.module';
 
-import ChatRouter from './src/router/chat.router';
+import ChatRouter from './src/router/chat/chat.router';
 import { MySQLModule } from './src/modules/mysql/mysql.module';
 import { FirebaseAdminModule } from './src/modules/firebase-admin/firebase-admin.modules';
 
@@ -42,6 +43,12 @@ class App {
             .withStaticPath(path.join(__dirname, 'static'), 2147483647000)
             .withMiddleware(morgan('dev'))
             .withMiddleware(cors())
+            .withMiddleware(bodyParser.json())
+            .withMiddleware(
+                bodyParser.urlencoded({
+                    extended: true
+                })
+            )
             .extendRouter(new ChatRouter(database, firebase))
             .start(port);
     }
