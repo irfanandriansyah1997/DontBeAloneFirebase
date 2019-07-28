@@ -12,10 +12,6 @@
         "noUnusedLocals": true,
         "strict": true,
         "outDir": "build",
-        "lib": ["es6", "es7", "dom"],
-        "baseUrl": "./",
-        "paths": {
-            "@/*": ["src/*"]
-        }
+        "lib": ["es6", "es7", "dom"]
     }
 }

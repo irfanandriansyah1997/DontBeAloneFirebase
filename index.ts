@@ -1,10 +1,12 @@
 import * as morgan from 'morgan';
 import * as path from 'path';
+import * as bodyParser from 'body-parser';
 import { ExpressModule } from './src/modules/express/express.modules';
 import { ConfigParserModule } from './src/modules/config-parser/config-parser.module';
 
-import ChatRouter from './src/router/chat.router';
+import ChatRouter from './src/router/chat/chat.router';
 import { MySQLModule } from './src/modules/mysql/mysql.module';
+import { FirebaseAdminModule } from './src/modules/firebase-admin/firebase-admin.modules';
 
 var cors = require('cors');
 
@@ -35,12 +37,19 @@ class App {
             this.config.get('database', 'password'),
             this.config.get('database', 'database')
         );
+        const firebase: FirebaseAdminModule = new FirebaseAdminModule();
 
         new ExpressModule()
             .withStaticPath(path.join(__dirname, 'static'), 2147483647000)
             .withMiddleware(morgan('dev'))
             .withMiddleware(cors())
-            .extendRouter(new ChatRouter(database))
+            .withMiddleware(bodyParser.json())
+            .withMiddleware(
+                bodyParser.urlencoded({
+                    extended: true
+                })
+            )
+            .extendRouter(new ChatRouter(database, firebase))
             .start(port);
     }
 }

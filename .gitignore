@@ -190,3 +190,4 @@ modules.xml
 .history
 
 # End of https://www.gitignore.io/api/node,phpstorm+all,visualstudiocode
+src/modules/firebase-admin/secret/dont-be-alone\.secret\.json
