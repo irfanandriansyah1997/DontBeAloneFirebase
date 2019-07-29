@@ -43,34 +43,51 @@ export default class ChatRouter extends BaseRouter {
             );
         });
 
-        router.route('/room').get(async (req: Request, res: Response, next: NextFunction) => {
+        router.route('/room').get((req: Request, res: Response, next: NextFunction) => {
+            res.set('Content-Type', 'application/json');
+
             this.database.query(
                 `SELECT t.*
                 FROM appdb.t_activity AS t
                 INNER JOIN t_activity_user tu ON tu.id_activity = t.id_activity
                 INNER JOIN t_user u ON u.username = tu.username
                 where u.username="hellyeah"`,
-                (err: MysqlError | null, results: ChatFieldDatabase[], fields?: FieldInfo[]) => {
+                async (
+                    err: MysqlError | null,
+                    results: ChatFieldDatabase[],
+                    fields?: FieldInfo[]
+                ) => {
                     if (err) {
                         res.status(500);
                         res.send(err.message);
                     } else if (results.length > 0) {
-                        results.map(async (item: ActivityField) => {
-                            const { room } = new ActivityModel(<ActivityField>item);
+                        const data = await Promise.all(
+                            results.map(async (item: ActivityField) => {
+                                const { room, model } = new ActivityModel(<ActivityField>item);
+                                const res: any = await axios.get(
+                                    `https://dont-be-alone-246305.firebaseio.com/database/${room}.json?limitToLast=1&orderBy="$key"`
+                                );
+                                let last_message = null;
 
-                            let res = await axios.get(
-                                `https://dont-be-alone-246305.firebaseio.com/database/${room}.json?limitToLast=1&orderBy="$key"`
-                            );
+                                if (res.data && Object.keys(res.data).length > 0) {
+                                    const key: string[] = Object.keys(res.data);
+                                    last_message = res.data[key[0]];
+                                }
 
-                            console.log(room);
-                            console.log(res.data);
-                        });
+                                return {
+                                    id_room: room,
+                                    activity: model,
+                                    last_message
+                                };
+                            })
+                        );
 
                         if (res) {
                             res.send(
                                 JSON.stringify({
-                                    status: 200,
-                                    message: 'Success'
+                                    success: true,
+                                    message: 'Success get message',
+                                    data
                                 })
                             );
                         }
