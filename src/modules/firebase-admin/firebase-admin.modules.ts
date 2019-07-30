@@ -40,7 +40,25 @@ export class FirebaseAdminModule {
                 message,
                 date: `${new Date().getTime()}`
             },
-            topic
+            notification: {
+                title: 'hello',
+                body: 'world'
+            },
+            android: {
+                priority: 'high',
+                ttl: 3600,
+                restrictedPackageName: 'edu.unikom.dontbealone',
+                data: {
+                    username,
+                    message,
+                    date: `${new Date().getTime()}`
+                },
+                notification: {
+                    title: 'hello',
+                    body: 'world'
+                }
+            },
+            topic: 'database-5789423675'
         };
 
         this.conf

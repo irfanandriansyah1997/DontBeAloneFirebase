@@ -1,13 +1,16 @@
 import { ActivityField } from './interfaces/model.interfaces';
+import ActivityTypeModel from './activity-type.model';
 
 export default class ActivityModel {
     public model: ActivityField;
 
     constructor(param: ActivityField) {
-        const { id_activity } = param;
+        const { id_activity, activity_name, ...left_variable } = param;
 
         this.model = {
-            id_activity: id_activity || 0
+            id_activity: id_activity || 0,
+            activity_name: activity_name || '',
+            activity_type: new ActivityTypeModel(left_variable).model
         };
     }
 
