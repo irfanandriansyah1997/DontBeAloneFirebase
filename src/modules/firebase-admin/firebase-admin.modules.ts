@@ -41,8 +41,8 @@ export class FirebaseAdminModule {
                 date: `${new Date().getTime()}`
             },
             notification: {
-                title: 'hello',
-                body: 'world'
+                title: 'Chat Room',
+                body: message
             },
             android: {
                 priority: 'high',
@@ -54,11 +54,11 @@ export class FirebaseAdminModule {
                     date: `${new Date().getTime()}`
                 },
                 notification: {
-                    title: 'hello',
-                    body: 'world'
+                    title: 'Chat Room',
+                    body: message
                 }
             },
-            topic: 'database-5789423675'
+            topic
         };
 
         this.conf

@@ -52,7 +52,9 @@ export default class ChatRouter extends BaseRouter {
                 INNER JOIN t_activity_user tu ON tu.id_activity = t.id_activity
                 INNER JOIN t_user u ON u.username = tu.username
                 INNER JOIN t_activity_type tt ON t.activity_type = tt.id_activity_type
-                where u.username="${req.query.username}" and t.datetime <= NOW() and t.is_banned = 0`,
+                where u.username="${
+                    req.query.username
+                }" and t.datetime >= NOW() and t.is_banned = 0`,
                 async (
                     err: MysqlError | null,
                     results: ChatFieldDatabase[],
