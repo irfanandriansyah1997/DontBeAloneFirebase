@@ -94,6 +94,14 @@ export default class ChatRouter extends BaseRouter {
                                 })
                             );
                         }
+                    } else if (results.length === 0) {
+                        res.send(
+                            JSON.stringify({
+                                success: true,
+                                message: 'Success get message',
+                                data: []
+                            })
+                        );
                     }
                 }
             );
